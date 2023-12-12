@@ -90,10 +90,36 @@ const Home = () => {
 		}
 	}
 
-	useEffect(() => {getAllTask()
-		
+	const deleteTask = async (id) => {
+		const updatedList = todos.filter( (task)=> task.id !== id);
+		setTodos(updatedList);
+		if (updatedList.length === 0) {
+			const defaultTask = {
+				id: 1,
+				label: "default task",
+				done: false
+			}
+			updatedList.push(defaultTask);
 
-	  }, []);
+	
+		}
+		const options = {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify (updatedList),
+		};
+		await fetch(apiUrl, options).then((response)=>{
+			if (!response.ok){console.error('Error al actualizar API')}
+
+		})
+
+	}
+
+	useEffect (() => {
+		getAllTask()}, [])
+
 	 
 	return (
 		<div className="container">
@@ -117,10 +143,7 @@ const Home = () => {
 							{`${item.label}`}
 							<i className="far fa-times-circle"
 								onClick={() =>
-									setTodos(
-										)}>
-												
-										</i>
+									deleteTask(item.id)}></i>
 						</li>)}
 					)}
 			</ul>
